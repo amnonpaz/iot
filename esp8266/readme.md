@@ -2,7 +2,7 @@ These esp8266 projects use freeRTOS from https://github.com/SuperHouse/esp-open-
 <br>
 You need to follow the build instruction as described in it's readme. before building,
 the following packages must be apt-get'ed:<br>
-sudo apt-get install git vim make autoconf libtool gettext gperf bison flex makeinfo texinfo help2man libtool libtool-bin ncurses-bin libncurses libncurses5 libncurses5-dev g++ gcc python python2.7-dev<br>
+sudo apt-get install make autoconf libtool gettext bison flex texinfo help2man libtool libtool-bin ncurses-bin libncurses5 libncurses5-dev g++ gcc python python2.7-dev gperf<br>
 <br>
 Also, pip install pyserial<br>
 <br>
