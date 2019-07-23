@@ -14,6 +14,11 @@ class PairingClient:
     messageTypePair = 2
     messageTypeAck = 3
 
+    Replies = {messageTypeNull:  "NULL",
+               messageTypeError: "Error",
+               messageTypePair:  "Paired",
+               messageTypeAck:   "Ack"}
+
     def __init__(self, pairing_server_ip = '192.168.0.1', pairing_port = 6001):
         self.pairingServerIp = pairing_server_ip
         self.pairingPort = pairing_port
@@ -34,7 +39,6 @@ class PairingClient:
     def disconnect(self):
         self.sock.close()
         self.connected = False
-
 
     def send_pair_message(self, ssid, passwd):
         if not self.connected:
@@ -60,11 +64,15 @@ class PairingClient:
         except Exception as e:
             print("Error receiving reply: ", e)
 
-        if reply is None:
-            return None
+        message = "No reply from endpoint"
+        if reply is not None:
+            reply_data = struct.unpack("L", reply)[0]
+            if reply_data < len(self.Replies):
+                message = self.Replies[reply_data]
+            else:
+                message = "Unknown reply"
 
-        return self.parse_reply(reply)
+        return message
 
-    def parse_reply(self, reply_buff):
-        return struct.unpack("L", reply_buff)[0]
-
+    def is_connected(self):
+        return self.connected
