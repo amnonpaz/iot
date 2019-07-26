@@ -133,7 +133,9 @@ void pairingTask(void *pvParameters)
         switch (head->messageType)
         {
         case PAIRING_MESSAGE_TYPE_PAIR:
-            paired = handlePairingMessage((struct pairingMessagePair *)head, len, ctx);
+            if (!handlePairingMessage((struct pairingMessagePair *)head, len, ctx)) {
+                paired = 1;
+            }
             break;
         default:
             break;
