@@ -5,6 +5,7 @@
 #include <lwip/api.h>
 
 #include "pairing.h"
+#include "led.h"
 
 #define AP_SSID "IoT-Endpoint"
 #define AP_PSK "1234567890"
@@ -92,6 +93,8 @@ void pairingTask(void *pvParameters)
 
     struct netconn *server = pairingServerStart();
     // TODO: Check if server is null
+    led_set(LED_RED, LED_STATE_ON, LED_BLINK_ON);
+
     while (!paired)
     {
         struct netconn *client = NULL;
@@ -153,6 +156,9 @@ void pairingTask(void *pvParameters)
         }
         netconn_delete(client);
     }
+
+    led_set(LED_RED, LED_STATE_OFF, LED_BLINK_OFF);
+    led_set(LED_GREEN, LED_STATE_ON, LED_BLINK_ON);
 
     pairingServerStop(server);
     vTaskDelete(NULL);

@@ -5,12 +5,16 @@
 #include <queue.h>
 
 #include "pairing.h"
+#include "led.h"
 
 void user_init(void)
 {
     uart_set_baud(0, 115200);
 
     printf("Device pairing example\n");
+
+    led_init();
+    led_start();
 
     pairingApSetup();
 
