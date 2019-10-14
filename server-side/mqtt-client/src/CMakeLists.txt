@@ -3,7 +3,8 @@ if(NOT DEFINED AGENT_TARGET)
 endif()
 
 set(SOURCES
-    main.cpp)
+    main.cpp
+    MqttClient.cpp)
 
 set(INCLUDES
     ${mosquitto_INCLUDES})
