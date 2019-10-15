@@ -34,7 +34,14 @@ class Config {
 
     private:
         std::map<std::string, std::string> m_config;
+
+    public:
+        static const std::string defaultUrl;
+        static const uint16_t defaultPort;
 };
+
+const std::string Config::defaultUrl{"localhost"};
+const uint16_t Config::defaultPort{1883};
 
 const Config::ArgumentsList Config::arguments{
     Config::Argument{"url",  "Broker URL", false , false},
@@ -137,6 +144,15 @@ int main(int argc, const char *argv[])
         Config::printArguments();
         return 0;
     }
+
+    std::string brokerUrl =
+        config.exists("url") ? config.get("url") : Config::defaultUrl;
+    uint16_t brokerPort =
+        config.exists("port") ? utils::fromString<uint16_t>(config.get("port")) : Config::defaultPort;
+
+    std::cout << "Connecting to borker on " << brokerUrl << ':'
+              << brokerPort << '\n';
+    MqttClient mqttClient{brokerUrl, brokerPort};
 
     return 0;
 }
