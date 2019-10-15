@@ -7,6 +7,8 @@
 #include <mutex>
 #include <tuple>
 
+namespace comm {
+
 class MqttClient : public mosqpp::mosquittopp {
     private:
         class SharedResources {
@@ -43,5 +45,7 @@ class MqttClient : public mosqpp::mosquittopp {
 
         static SharedResources s_sharedResources; 
 };
+
+} // namespace comm
 
 #endif // _MQTT_CLIENT_HPP

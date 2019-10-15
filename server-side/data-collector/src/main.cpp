@@ -152,7 +152,7 @@ int main(int argc, const char *argv[])
 
     std::cout << "Connecting to borker on " << brokerUrl << ':'
               << brokerPort << '\n';
-    MqttClient mqttClient{brokerUrl, brokerPort};
+    comm::MqttClient mqttClient{brokerUrl, brokerPort};
 
     return 0;
 }

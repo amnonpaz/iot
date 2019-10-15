@@ -1,5 +1,7 @@
 #include "MqttClient.hpp"
 
+namespace comm {
+
 void MqttClient::SharedResources::up()
 {
     std::unique_lock lk(m_lock);
@@ -32,3 +34,5 @@ MqttClient::MqttClient(std::string brokerUrl,
 MqttClient::~MqttClient() {
     s_sharedResources.down();
 }
+
+} // namespace comm
