@@ -22,6 +22,12 @@ class MqttClient : public mosqpp::mosquittopp {
                 uint32_t m_count;
         };
 
+        enum State {
+            StateInit,
+            StateConnected,
+            StateDisconnected
+        };
+
     public:
         class Exception : public std::exception {
             public:
@@ -37,12 +43,25 @@ class MqttClient : public mosqpp::mosquittopp {
 
     public:
         MqttClient(std::string brokerUrl,
-                   uint16_t brokerPort);
+                   uint16_t brokerPort,
+                   std::string clientId);
         ~MqttClient();
+
+        void connect();
+
+    protected:
+        void on_connect(int rc) override;
+
+    private:
+        void reconnect();
+        static void printErrorMessage(int rc);
 
     private:
         const std::tuple<std::string, uint16_t> m_brokerAddress;
+        State m_state;
 
+        static const uint32_t s_keepAliveS = 120;
+        static const uint32_t s_reconnectTimeoutS = 30;
         static SharedResources s_sharedResources; 
 };
 

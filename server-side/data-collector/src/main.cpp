@@ -3,7 +3,7 @@
 #include "MqttClient.hpp"
 
 #include <string>
-#include <array>
+#include <vector>
 #include <algorithm>
 #include <map>
 #include <iostream>
@@ -18,7 +18,7 @@ class Config {
             bool null;
         };
 
-        typedef std::array<Argument, 3> ArgumentsList;
+        typedef std::vector<Argument> ArgumentsList;
         static const ArgumentsList arguments;
 
     public:
@@ -38,16 +38,20 @@ class Config {
     public:
         static const std::string defaultUrl;
         static const uint16_t defaultPort;
+        static const std::string defaultId;
+};
+
+const Config::ArgumentsList Config::arguments{
+                    // Name, Description, unary?, null?
+    Config::Argument{"url",  "Broker URL",   false, false},
+    Config::Argument{"port", "Broker port",  false, false},
+    Config::Argument{"id",   "Client ID",    false, false},
+    Config::Argument{"help", "Print help message" , true, false}
 };
 
 const std::string Config::defaultUrl{"localhost"};
 const uint16_t Config::defaultPort{1883};
-
-const Config::ArgumentsList Config::arguments{
-    Config::Argument{"url",  "Broker URL", false , false},
-    Config::Argument{"port", "Broker port" , false, false},
-    Config::Argument{"help", "Print help message" , true, false}
-};
+const std::string Config::defaultId{"localDataCollector"};
 
 const Config::Argument &Config::findArgByName(const std::string &argName)
 {
@@ -149,10 +153,12 @@ int main(int argc, const char *argv[])
         config.exists("url") ? config.get("url") : Config::defaultUrl;
     uint16_t brokerPort =
         config.exists("port") ? utils::fromString<uint16_t>(config.get("port")) : Config::defaultPort;
+    std::string clientId =
+        config.exists("id") ? config.get("id") : Config::defaultId;
 
     std::cout << "Connecting to borker on " << brokerUrl << ':'
               << brokerPort << '\n';
-    comm::MqttClient mqttClient{brokerUrl, brokerPort};
+    comm::MqttClient mqttClient{brokerUrl, brokerPort, clientId};
 
     return 0;
 }
