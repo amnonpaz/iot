@@ -62,3 +62,4 @@ firmware/
 # IDEs
 .vscode
 .idea
+*.swp
