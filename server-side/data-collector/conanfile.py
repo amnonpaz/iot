@@ -1,8 +1,8 @@
 from conans import ConanFile, CMake, tools
 
 
-class MqttclientConan(ConanFile):
-    name = "mqtt-client"
+class DataCollectorConan(ConanFile):
+    name = "data-collector"
     version = "0.1.0"
     license = "MIT"
     author = "Amnon Paz <pazamnon@gmail.com>"
@@ -33,5 +33,5 @@ class MqttclientConan(ConanFile):
         self.copy(self.agent_target, "bin", "build/bin")
 
     def package_info(self):
-        self.cpp_info.libs = ["mqtt-client"]
+        self.cpp_info.libs = ["data-collector"]
 
