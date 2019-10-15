@@ -44,6 +44,7 @@ namespace comm {
 
     void MqttClient::connect() {
         int rc;
+
         if (m_state == StateDisconnected) {
             rc = mosquittopp::reconnect();
         } else {
@@ -54,7 +55,6 @@ namespace comm {
 
         if (rc) {
             printErrorMessage(rc);
-            reconnect();
         }
     }
 
@@ -71,11 +71,16 @@ namespace comm {
             m_state = StateConnected;
         } else {
             printErrorMessage(rc);
-            if (m_state != StateInit)
+            if (m_state != StateInit) {
                 m_state = StateDisconnected;
-
-            reconnect();
+            }
         }
+    }
+
+    void MqttClient::on_disconnect(int rc) {
+        printErrorMessage(rc);
+        std::cout << "Disconected...\n";
+        m_state = StateDisconnected;
     }
 
     void MqttClient::printErrorMessage(int rc) {

@@ -51,6 +51,7 @@ namespace comm {
 
         protected:
             void on_connect(int rc) override;
+            void on_disconnect(int rc) override;
 
         private:
             void reconnect();
