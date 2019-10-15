@@ -135,6 +135,7 @@ int main(int argc, const char *argv[])
         std::cout << "Data collector MqTT client\n";
         std::cout << "Options:\n";
         Config::printArguments();
+        return 0;
     }
 
     return 0;
