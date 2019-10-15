@@ -4,6 +4,7 @@ endif()
 
 set(SOURCES
     main.cpp
+    Utils.cpp
     MqttClient.cpp)
 
 set(INCLUDES
