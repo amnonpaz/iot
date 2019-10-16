@@ -4,9 +4,9 @@
 
 #include "Utils.hpp"
 
-namespace comm {
+namespace mqtt {
 
-    void MqttClient::SharedResources::up()
+    void Client::SharedResources::up()
     {
         std::unique_lock lk(m_lock);
 
@@ -16,7 +16,7 @@ namespace comm {
         m_count++;
     }
 
-    void MqttClient::SharedResources::down()
+    void Client::SharedResources::down()
     {
         std::unique_lock lk(m_lock);
 
@@ -27,9 +27,9 @@ namespace comm {
 
     }
 
-    MqttClient::SharedResources MqttClient::s_sharedResources;
+    Client::SharedResources Client::s_sharedResources;
 
-    MqttClient::MqttClient(std::string brokerUrl,
+    Client::Client(std::string brokerUrl,
                            uint16_t brokerPort,
                            std::string clientId) :
         mosquittopp{clientId.c_str()},
@@ -38,11 +38,11 @@ namespace comm {
         s_sharedResources.up();
     }
 
-    MqttClient::~MqttClient() {
+    Client::~Client() {
         s_sharedResources.down();
     }
 
-    void MqttClient::connect() {
+    void Client::connect() {
         int rc;
 
         if (m_state == StateDisconnected) {
@@ -58,21 +58,21 @@ namespace comm {
         }
     }
 
-    void MqttClient::reconnect() {
+    void Client::reconnect() {
         std::cerr << "Trying to reconnect in "
                   << s_reconnectTimeoutS << " seconds\n";
         utils::TimedAsyncExecution(s_reconnectTimeoutS*1000,
                                    [this](){ connect(); });
     }
 
-    void MqttClient::subscribe(std::string topic, int qos) {
+    void Client::subscribe(std::string topic, int qos) {
         if (m_state == StateConnected) {
             mosquittopp::subscribe(nullptr, topic.c_str(), qos);
         }
         m_subscriptions.push_back(Subscription{std::move(topic), qos});
     }
 
-    void MqttClient::on_connect(int rc) {
+    void Client::on_connect(int rc) {
         if (!rc) {
             std::cout << "Connected...\n";
             m_state = StateConnected;
@@ -86,20 +86,20 @@ namespace comm {
         }
     }
 
-    void MqttClient::on_disconnect(int rc) {
+    void Client::on_disconnect(int rc) {
         printErrorMessage(rc);
         std::cout << "Disconected...\n";
         m_state = StateDisconnected;
     }
 
-    void MqttClient::on_message(const struct mosquitto_message *msg) {
+    void Client::on_message(const struct mosquitto_message *msg) {
         UNUSED(msg);
 
         // TODO: Handle incoming message
     }
 
-    void MqttClient::printErrorMessage(int rc) {
+    void Client::printErrorMessage(int rc) {
         std::cerr << "Error: " << std::string(mosqpp::strerror(rc)) << '\n';
     }
 
-} // namespace comm
+} // namespace mqtt
