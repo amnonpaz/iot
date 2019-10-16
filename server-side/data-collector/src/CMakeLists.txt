@@ -5,7 +5,8 @@ endif()
 set(SOURCES
     main.cpp
     Utils.cpp
-    MqttClient.cpp)
+    MqttClient.cpp
+    DataHandler.cpp)
 
 set(INCLUDES
     ${mosquitto_INCLUDES})
