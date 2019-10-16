@@ -6,6 +6,7 @@
 #include <string>
 #include <mutex>
 #include <tuple>
+#include <list>
 
 namespace comm {
 
@@ -28,6 +29,8 @@ namespace comm {
                 StateDisconnected
             };
 
+            typedef std::tuple<std::string, int> Subscription;
+
         public:
             class Exception : public std::exception {
                 public:
@@ -48,10 +51,12 @@ namespace comm {
             ~MqttClient();
 
             void connect();
+            void subscribe(std::string topic, int qos = 0);
 
         protected:
             void on_connect(int rc) override;
             void on_disconnect(int rc) override;
+            void on_message(const struct mosquitto_message *msg);
 
         private:
             void reconnect();
@@ -59,6 +64,7 @@ namespace comm {
 
         private:
             const std::tuple<std::string, uint16_t> m_brokerAddress;
+            std::list<Subscription> m_subscriptions;
             State m_state;
 
             static const uint32_t s_keepAliveS = 120;

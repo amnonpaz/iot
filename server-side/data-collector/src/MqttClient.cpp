@@ -65,10 +65,21 @@ namespace comm {
                                    [this](){ connect(); });
     }
 
+    void MqttClient::subscribe(std::string topic, int qos) {
+        if (m_state == StateConnected) {
+            mosquittopp::subscribe(nullptr, topic.c_str(), qos);
+        }
+        m_subscriptions.push_back(Subscription{std::move(topic), qos});
+    }
+
     void MqttClient::on_connect(int rc) {
         if (!rc) {
             std::cout << "Connected...\n";
             m_state = StateConnected;
+            for_each(m_subscriptions.begin(), m_subscriptions.end(),
+                     [this](Subscription sub) {
+                        mosquittopp::subscribe(nullptr, std::get<0>(sub).c_str(), std::get<1>(sub));
+                     });
         } else {
             printErrorMessage(rc);
             if (m_state != StateInit) {
@@ -81,6 +92,12 @@ namespace comm {
         printErrorMessage(rc);
         std::cout << "Disconected...\n";
         m_state = StateDisconnected;
+    }
+
+    void MqttClient::on_message(const struct mosquitto_message *msg) {
+        UNUSED(msg);
+
+        // TODO: Handle incoming message
     }
 
     void MqttClient::printErrorMessage(int rc) {
