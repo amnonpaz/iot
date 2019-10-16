@@ -82,9 +82,7 @@ namespace comm {
                      });
         } else {
             printErrorMessage(rc);
-            if (m_state != StateInit) {
-                m_state = StateDisconnected;
-            }
+            m_state = StateDisconnected;
         }
     }
 
