@@ -1,5 +1,5 @@
-#ifndef _MQTT_CLIENT_HPP
-#define _MQTT_CLIENT_HPP
+#ifndef _MQTT_CLIENT
+#define _MQTT_CLIENT
 
 #include <mosquittopp.h>
 
@@ -8,9 +8,9 @@
 #include <tuple>
 #include <list>
 
-namespace comm {
+namespace mqtt {
 
-    class MqttClient : public mosqpp::mosquittopp {
+    class Client : public mosqpp::mosquittopp {
         private:
             class SharedResources {
                 public:
@@ -35,7 +35,7 @@ namespace comm {
             class Exception : public std::exception {
                 public:
                     explicit Exception(std::string msg) :
-                        m_msg("MqttClient: " + std::move(msg)) {}
+                        m_msg("Client: " + std::move(msg)) {}
                     char const* what() const noexcept override {
                         return m_msg.c_str();
                     }
@@ -45,10 +45,10 @@ namespace comm {
             };
 
         public:
-            MqttClient(std::string brokerUrl,
+            Client(std::string brokerUrl,
                        uint16_t brokerPort,
                        std::string clientId);
-            ~MqttClient();
+            ~Client();
 
             void connect();
             void subscribe(std::string topic, int qos = 0);
@@ -72,6 +72,6 @@ namespace comm {
             static SharedResources s_sharedResources;
     };
 
-} // namespace comm
+} // namespace mqtt
 
-#endif // _MQTT_CLIENT_HPP
+#endif // _MQTT_CLIENT
