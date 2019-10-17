@@ -10,8 +10,8 @@ class DataCollectorConan(ConanFile):
     description = "MqTT client for contorlling remote endpoints"
     topics = ("iot", "mqtt")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = {"shared": False}
+    options = {"local": [True, False]}
+    default_options = {"local": False}
     generators = [ "cmake", "cmake_find_package" ]
     requires = [ "mosquitto/1.4.15@bincrafters/stable" ]
     agent_target = "collector-agent"
@@ -26,7 +26,12 @@ class DataCollectorConan(ConanFile):
         cmake.definitions["PROJECT_DESCRIPTION"] = self.description
         cmake.definitions["CMAKE_CXX_STANDARD"] = 17
         cmake.definitions["AGENT_TARGET"] = self.agent_target
-        cmake.configure()
+
+        sf = ""
+        if not self.options.local:
+            sf = "iot/server-side/data-collector"
+
+        cmake.configure(source_folder=sf)
         cmake.build()
 
     def package(self):
