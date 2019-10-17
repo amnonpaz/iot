@@ -1,0 +1,16 @@
+os: linux
+language: c++
+python: "3.7"
+dist: bionic
+compiler:
+  - gcc
+install:
+  - pip install conan --user
+  - conan user
+script:
+  - ls -l 
+  - cd server-side/data-collector
+  - mkdir build ; cd build
+  - conan install -o local=True -o testing=True  ..
+  - conan build ..
+
