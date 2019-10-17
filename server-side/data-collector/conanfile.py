@@ -10,8 +10,8 @@ class DataCollectorConan(ConanFile):
     description = "MqTT client for contorlling remote endpoints"
     topics = ("iot", "mqtt")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"local": [True, False]}
-    default_options = {"local": False}
+    options = {"local": [True, False], "testing": [True, False]}
+    default_options = {"local": False, "testing": False}
     generators = [ "cmake", "cmake_find_package" ]
     requires = [ "mosquitto/1.4.15@bincrafters/stable" ]
     agent_target = "collector-agent"
@@ -24,6 +24,9 @@ class DataCollectorConan(ConanFile):
     def source(self):
         self.run("git clone https://github.com/amnonpaz/iot.git")
 
+    def requirements(self):
+        self.requires("gtest/1.8.1@bincrafters/stable")
+
     def build(self):
         cmake = CMake(self)
         cmake.definitions["CMAKE_PROJECT_NAME"] = self.name
@@ -31,6 +34,8 @@ class DataCollectorConan(ConanFile):
         cmake.definitions["PROJECT_DESCRIPTION"] = self.description
         cmake.definitions["CMAKE_CXX_STANDARD"] = 17
         cmake.definitions["AGENT_TARGET"] = self.agent_target
+        if self.options.testing:
+            cmake.definitions["TESTING"] = "ON"
 
         cmake.configure(source_folder=self.get_source_folder())
         cmake.build()

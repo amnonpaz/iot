@@ -9,3 +9,7 @@ find_package(OpenSSL REQUIRED)
 add_compile_options("-Wall" "-Wextra" "-Werror")
 
 add_subdirectory(src)
+
+if(DEFINED TESTING)
+    add_subdirectory(tests)
+endif()
