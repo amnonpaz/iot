@@ -16,6 +16,11 @@ class DataCollectorConan(ConanFile):
     requires = [ "mosquitto/1.4.15@bincrafters/stable" ]
     agent_target = "collector-agent"
 
+    def get_source_folder(self):
+        if not self.options.local:
+            return "iot/server-side/data-collector"
+        return ""
+
     def source(self):
         self.run("git clone https://github.com/amnonpaz/iot.git")
 
@@ -27,11 +32,7 @@ class DataCollectorConan(ConanFile):
         cmake.definitions["CMAKE_CXX_STANDARD"] = 17
         cmake.definitions["AGENT_TARGET"] = self.agent_target
 
-        sf = ""
-        if not self.options.local:
-            sf = "iot/server-side/data-collector"
-
-        cmake.configure(source_folder=sf)
+        cmake.configure(source_folder=self.get_source_folder())
         cmake.build()
 
     def package(self):
