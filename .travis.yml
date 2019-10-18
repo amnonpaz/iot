@@ -1,6 +1,5 @@
 os: linux
-language: c++
-python: "3.7"
+language: cpp
 dist: bionic
 compiler:
   - gcc
