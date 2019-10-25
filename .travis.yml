@@ -1,15 +1,18 @@
 os: linux
 language: cpp
 dist: bionic
+env:
+  - UNITTESTS_SCRIPT=run_all_unittests.sh 
 compiler:
   - gcc
 install:
   - pip install conan --user
   - conan user
 script:
-  - ls -l 
   - cd server-side/data-collector
   - mkdir build ; cd build
   - conan install -o local=True -o testing=True  ..
   - conan build ..
-
+  - cp ../tests/${UNITTESTS_SCRIPT} bin/
+  - chmod +x bin/${UNITTESTS_SCRIPT}
+  - ./bin/${UNITTESTS_SCRIPT} bin/
