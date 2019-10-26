@@ -6,15 +6,15 @@
 #include <condition_variable>
 #include <queue>
 
-namespace data {
+namespace comm {
 
     typedef std::vector<char> Payload;
     typedef std::tuple<std::string, Payload> Message;
 
-    class Handler {
+    class MessageHandler {
         public:
-            Handler();
-            ~Handler();
+            MessageHandler();
+            ~MessageHandler();
 
             void enqueue(std::string topic, Payload message);
 
@@ -40,5 +40,6 @@ namespace data {
             static const uint32_t s_timeout_ms = 300;
     };
 
-} // namespace data
+} // namespace comm
+
 #endif // DATA_HANDLER_

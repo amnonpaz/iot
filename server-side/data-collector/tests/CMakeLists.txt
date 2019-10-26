@@ -5,5 +5,5 @@ include_directories(${SRC_DIR})
 
 add_unittest(NAME data_handler
              SOURCES
-             DataHandlerTest.cpp
-             ${SRC_DIR}/DataHandler.cpp)
+             MessageHandlerTest.cpp
+             ${SRC_DIR}/MessageHandler.cpp)

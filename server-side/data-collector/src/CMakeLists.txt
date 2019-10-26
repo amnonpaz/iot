@@ -6,7 +6,7 @@ set(SOURCES
     main.cpp
     Utils.cpp
     MqttClient.cpp
-    DataHandler.cpp)
+    MessageHandler.cpp)
 
 set(INCLUDES
     ${mosquitto_INCLUDES})

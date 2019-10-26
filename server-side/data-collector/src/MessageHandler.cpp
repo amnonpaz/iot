@@ -1,20 +1,20 @@
-#include "DataHandler.hpp"
+#include "MessageHandler.hpp"
 
 #include <chrono>
 
-namespace data {
+namespace comm {
 
-    Handler::Handler() :
+    MessageHandler::MessageHandler() :
         m_running{false}
     {
     }
 
-    Handler::~Handler()
+    MessageHandler::~MessageHandler()
     {
         stop();
     }
 
-    bool Handler::start()
+    bool MessageHandler::start()
     {
         std::unique_lock lk{m_lock};
 
@@ -24,7 +24,7 @@ namespace data {
         m_running = true;
 
         try {
-            m_thread = std::thread{&Handler::work, this};
+            m_thread = std::thread{&MessageHandler::work, this};
         } catch(...) {
             m_running = false;
         }
@@ -32,7 +32,7 @@ namespace data {
         return m_running;
     }
 
-    void Handler::stop()
+    void MessageHandler::stop()
     {
         {
             std::lock_guard lk{m_lock};
@@ -47,7 +47,7 @@ namespace data {
         m_thread.join();
     }
 
-    void Handler::work()
+    void MessageHandler::work()
     {
         while(wait()) {
             Message msg(pop());
@@ -56,7 +56,7 @@ namespace data {
         }
     }
 
-    Message Handler::pop()
+    Message MessageHandler::pop()
     {
         std::unique_lock lk{m_lock};
 
@@ -66,7 +66,7 @@ namespace data {
         return std::move(msg);
     }
 
-    bool Handler::wait()
+    bool MessageHandler::wait()
     {
         std::unique_lock lk{m_lock};
 
@@ -76,7 +76,7 @@ namespace data {
         return m_running;
     }
 
-    void Handler::enqueue(std::string topic, Payload payload)
+    void MessageHandler::enqueue(std::string topic, Payload payload)
     {
         std::unique_lock lk{m_lock};
 
@@ -84,4 +84,4 @@ namespace data {
         m_signal.notify_all();
     }
 
-} // namespace data
+} // namespace comm
