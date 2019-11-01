@@ -32,19 +32,6 @@ namespace mqtt {
             typedef std::tuple<std::string, int> Subscription;
 
         public:
-            class Exception : public std::exception {
-                public:
-                    explicit Exception(std::string msg) :
-                        m_msg("Client: " + std::move(msg)) {}
-                    char const* what() const noexcept override {
-                        return m_msg.c_str();
-                    }
-
-                private:
-                    std::string m_msg;
-            };
-
-        public:
             Client(std::string brokerUrl,
                        uint16_t brokerPort,
                        std::string clientId);
