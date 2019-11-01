@@ -1,6 +1,7 @@
 #include "Utils.hpp"
 
 #include "MqttClient.hpp"
+#include "MessageHandler.hpp"
 
 #include <string>
 #include <vector>
@@ -130,6 +131,21 @@ void Config::printArguments() {
     }
 }
 
+class DummyHandler : public comm::MessageHandler {
+    public:
+        DummyHandler() = default;
+        ~DummyHandler() = default;
+
+    protected:
+        void handle(std::string &&topic, comm::Payload &&payload) override;
+};
+
+void DummyHandler::handle(std::string &&topic, comm::Payload &&payload) {
+    std::cout << "Received on \"" << topic << "\":"
+              << std::string{payload.data(), payload.size()}
+              << '\n';
+}
+
 int main(int argc, const char *argv[])
 {
     Config config;
@@ -158,7 +174,8 @@ int main(int argc, const char *argv[])
 
     std::cout << "Connecting to borker on " << brokerUrl << ':'
               << brokerPort << '\n';
-    mqtt::Client mqttClient{brokerUrl, brokerPort, clientId};
+    DummyHandler handler;
+    mqtt::Client mqttClient{brokerUrl, brokerPort, clientId, handler};
 
     return 0;
 }

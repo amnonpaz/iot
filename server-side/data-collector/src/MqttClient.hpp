@@ -1,6 +1,7 @@
 #ifndef _MQTT_CLIENT
 #define _MQTT_CLIENT
 
+#include "MessageHandler.hpp"
 #include <mosquittopp.h>
 
 #include <string>
@@ -33,8 +34,9 @@ namespace mqtt {
 
         public:
             Client(std::string brokerUrl,
-                       uint16_t brokerPort,
-                       std::string clientId);
+                   uint16_t brokerPort,
+                   std::string clientId,
+                   comm::MessageHandler &messageHandler);
             ~Client();
 
             void connect();
@@ -51,6 +53,7 @@ namespace mqtt {
 
         private:
             const std::tuple<std::string, uint16_t> m_brokerAddress;
+            comm::MessageHandler &m_messageHandler;
             std::list<Subscription> m_subscriptions;
             State m_state;
 

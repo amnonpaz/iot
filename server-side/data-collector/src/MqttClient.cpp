@@ -31,9 +31,11 @@ namespace mqtt {
 
     Client::Client(std::string brokerUrl,
                            uint16_t brokerPort,
-                           std::string clientId) :
+                           std::string clientId,
+                           comm::MessageHandler &messageHandler) :
         mosquittopp{clientId.c_str()},
         m_brokerAddress({std::move(brokerUrl), brokerPort}),
+        m_messageHandler(messageHandler),
         m_state{StateInit} {
         s_sharedResources.up();
     }
@@ -93,9 +95,10 @@ namespace mqtt {
     }
 
     void Client::on_message(const struct mosquitto_message *msg) {
-        UNUSED(msg);
+        char *data = reinterpret_cast<char *>(msg->payload);
+        comm::Payload payload{data, data + msg->payloadlen};
 
-        // TODO: Handle incoming message
+        m_messageHandler.enqueue(std::string{msg->topic}, std::move(payload));
     }
 
     void Client::printErrorMessage(int rc) {
